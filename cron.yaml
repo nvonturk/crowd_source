@@ -1,0 +1,4 @@
+cron:
+- description: "predictit api pull"
+  url: /predictit
+  schedule: every 1 minutes
