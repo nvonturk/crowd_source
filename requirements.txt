@@ -1,2 +1,4 @@
 Flask==0.12.2
 Werkzeug<0.13.0,>=0.12.0
+google-cloud-storage==1.10.0
+requests-toolbelt==0.8.0

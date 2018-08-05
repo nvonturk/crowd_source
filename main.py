@@ -17,13 +17,21 @@ import logging
 
 from google.appengine.api import urlfetch
 from google.cloud import storage
+import datetime
+from pytz import reference
 
 from flask import Flask, request
 
+import requests_toolbelt.adapters.appengine
+import json
+requests_toolbelt.adapters.appengine.monkeypatch()
+
 
 app = Flask(__name__)
-
-
+storage_client = storage.Client()
+bucket_name = "crowd_source"
+bucket = storage_client.get_bucket(bucket_name)
+localtime = reference.LocalTimezone()
 
 @app.route('/')
 def hello():
@@ -39,7 +47,10 @@ def collect_market_data():
     try:
         print("````````````````````````")
         response = urlfetch.fetch("https://www.predictit.org/api/marketdata/all/", headers={"Accept": "application/json"})
-        print(response.content)
+        parsed = json.loads(response.content)
+        blob_name = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S, " + localtime.tzname(datetime.datetime.now()))
+        blob = bucket.blob(blob_name)
+        blob.upload_from_string(response.content, content_type='application/json')
         print("~~~~~~~~~~~~~~~~~~~~~~~~")
         return "Finished try", 200
     except Exception as e:
