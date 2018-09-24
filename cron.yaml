@@ -2,3 +2,6 @@ cron:
 - description: "predictit api pull"
   url: /predictit
   schedule: every 1 minutes
+- description: "process data"
+  url: /process
+  schedule: every 1 hours
